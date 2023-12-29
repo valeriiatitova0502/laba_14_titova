@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Цветочные магазинчики</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <style>
+        .navbar-nav {
+            margin-left: auto;
+        }
+
+        .navbar-brand,
+        .navbar-nav .nav-link {
+            padding-right: 20px;
+        }
+
+        .navbar-collapse {
+            text-align: center;
+        }
+    </style>
+    <script>
+        function validatePhoneNumber() {
+            var phoneNumber = document.getElementById('phone').value;
+            var phoneRegex = /^\d{11}$/;
+            var errorMessageElement = document.getElementById('error-message');
+            if (!phoneRegex.test(phoneNumber)) {
+                errorMessageElement.textContent = 'Пожалуйста, введите корректный номер телефона (11 цифр).';
+                return false;
+            }
+            return true;
+        }
+    </script>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" th:href="@{/flowershop}">Цветочные магазинчики</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</nav>
+
+<div class="container">
+    <h3>Список цветочных магазинов</h3>
+
+    <!-- Добавляем приветствие для текущего пользователя -->
+    <p th:if="${currentUserName}" th:text="'Привет, ' + ${currentUserName} + '!'"></p>
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Название магазина</th>
+            <th>Адрес</th>
+            <th>Телефон</th>
+            <th>Время работы</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="flowerShop : ${flowerShops}">
+            <td th:text="${flowerShop.id}"/>
+            <td th:text="${flowerShop.name}"/>
+            <td th:text="${flowerShop.address}"/>
+            <td th:text="${flowerShop.phone}"/>
+            <td th:text="${flowerShop.workingHours}"/>
+            <td>
+                <a th:href="@{'/flowerShops/show/' + ${flowerShop.id}}" th:text="Просмотреть"/>
+                <a th:href="@{'/flowerShops/edit/' + ${flowerShop.id}}" th:text="Редактировать" class="text-info" style="margin-left: 15px"/>
+                <a th:href="@{'/flowerShops/delete/' + ${flowerShop.id}}" th:text="Удалить" class="text-danger" style="margin-left: 15px"/>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <br>
+    <form th:action="@{/flowerShops/add}">
+        <button type="submit" class="btn btn-primary">Добавить магазин</button>
+    </form>
+
+    <h3 style="margin-top: 20px">Отфильтровать</h3>
+    <form th:action="@{/flowerShops/filter}" method="get">
+        <div class="form-group">
+            <label for="name">Название магазина:</label>
+            <input type="text" class="form-control" id="name" name="name" th:value="${name}">
+        </div>
+        <div class="form-group">
+            <label for="address">Адрес:</label>
+            <input type="text" class="form-control" id="address" name="address" th:value="${address}">
+        </div>
+        <div class="form-group">
+            <label for="workingHours">Время работы:</label>
+            <input type="text" class="form-control" id="workingHours" name="workingHours" th:value="${workingHours}">
+        </div>
+        <button type="submit" class="btn btn-primary">Отфильтровать</button>
+    </form>
+
+    <form th:action="@{/flowerShops}">
+        <button style='margin-top: 10px' type="submit" class="btn btn-danger">Сбросить</button>
+    </form>
+</div>
+
+</body>
+</html>
